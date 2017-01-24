@@ -1,4 +1,4 @@
-(defproject cooler "0.1.0"
+(defproject cooler "0.1.1-SNAPSHOT"
   :description "A distributed rate-limiting library based on the GCRA algorithm."
   :url "https://github.com/dparis/cooler"
   :license {:name "The MIT Licence"
