@@ -19,6 +19,8 @@
                  [prismatic/schema "1.1.3"]
                  [com.taoensso/timbre "4.8.0"]]
 
+  :deploy-repositories [["releases" :clojars]]
+
   :jvm-opts ["-Duser.timezone=UTC"]
 
   :profiles {:dev {:source-paths ["dev"]
