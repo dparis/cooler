@@ -22,7 +22,7 @@
         mus-part (str/pad (last time-parts) pad-opts)]
     (-> [(first time-parts) mus-part]
         (str/join)
-        (str/parse-long))))
+        (str/parse-int))))
 
 (s/defn ^:private redis-read-value :- RedisReadValueResponse
   [conn-opts :- ConnectionOptions
