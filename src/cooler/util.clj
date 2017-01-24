@@ -16,8 +16,8 @@
   {:millisecond 1000
    :second      (* 1000 1000)
    :minute      (* 60 1000 1000)
-   :hour        (* 60 1000 1000)
-   :day         (* 24 60 1000 100)})
+   :hour        (* 60 60 1000 1000)
+   :day         (* 24 60 60 1000 1000)})
 
 (def mus-conversion-units
   "Valid microsecond units of conversion."
