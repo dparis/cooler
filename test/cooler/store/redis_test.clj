@@ -32,13 +32,46 @@
 
 (deftest read-value-test
   (let [store (make-redis-store conn-opts key-fn)]
-    (testing "present key"
+    (testing "present key with integer value"
       (let [present-raw-key "cooler:rate-limit-test:present-key"
             set-resp        (redis/wcar conn-opts
-                                        (redis/set present-raw-key 123))
+                              (redis/set present-raw-key 123))
             start-ms        (System/currentTimeMillis)
             present-resp    (read-value store "present-key")]
         (is (= 123 (:value present-resp)))
+        (is (<= start-ms (-> (:time-mus present-resp)
+                             (/ 1000)
+                             (long))))))
+
+    (testing "present key with string value"
+      (let [present-raw-key "cooler:rate-limit-test:present-key"
+            set-resp        (redis/wcar conn-opts
+                              (redis/set present-raw-key "123.456"))
+            start-ms        (System/currentTimeMillis)
+            present-resp    (read-value store "present-key")]
+        (is (= 123 (:value present-resp)))
+        (is (<= start-ms (-> (:time-mus present-resp)
+                             (/ 1000)
+                             (long))))))
+
+    (testing "present key with float value"
+      (let [present-raw-key "cooler:rate-limit-test:present-key"
+            set-resp        (redis/wcar conn-opts
+                                        (redis/set present-raw-key 123.456))
+            start-ms        (System/currentTimeMillis)
+            present-resp    (read-value store "present-key")]
+        (is (= 123 (:value present-resp)))
+        (is (<= start-ms (-> (:time-mus present-resp)
+                             (/ 1000)
+                             (long))))))
+
+    (testing "present key with ratio value"
+      (let [present-raw-key "cooler:rate-limit-test:present-key"
+            set-resp        (redis/wcar conn-opts
+                              (redis/set present-raw-key 455/456))
+            start-ms        (System/currentTimeMillis)
+            present-resp    (read-value store "present-key")]
+        (is (= 1 (:value present-resp)))
         (is (<= start-ms (-> (:time-mus present-resp)
                              (/ 1000)
                              (long))))))

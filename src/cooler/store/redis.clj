@@ -15,6 +15,36 @@
   {:time-mus s/Int
    :value    (s/maybe s/Int)})
 
+(defmulti ^:private coerce-to-long class)
+
+(defmethod ^:private coerce-to-long nil
+  [x]
+  nil)
+
+(defmethod ^:private coerce-to-long java.lang.String
+  [x]
+  (str/parse-int x))
+
+(defmethod ^:private coerce-to-long java.lang.Long
+  [x]
+  x)
+
+(defmethod ^:private coerce-to-long java.lang.Integer
+  [x]
+  (long x))
+
+(defmethod ^:private coerce-to-long java.lang.Double
+  [x]
+  (Math/round x))
+
+(defmethod ^:private coerce-to-long java.lang.Float
+  [x]
+  (long (Math/round x)))
+
+(defmethod ^:private coerce-to-long clojure.lang.Ratio
+  [x]
+  (Math/round (double x)))
+
 (s/defn ^:private parse-redis-time :- s/Int
   [time-parts :- (s/pair s/Str "epoch-ms" s/Str "cur-mus")]
   (let [pad-opts {:length  6
@@ -30,7 +60,7 @@
   (let [[time-parts v] (redis/wcar conn-opts
                                    (redis/time)
                                    (redis/get k))
-        value-long     (when v (Long/parseLong v))
+        value-long     (when v (coerce-to-long v))
         read-time-mus  (parse-redis-time time-parts)]
     {:time-mus read-time-mus
      :value    value-long}))
