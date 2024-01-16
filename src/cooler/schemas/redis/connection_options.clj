@@ -22,17 +22,18 @@
    (s/optional-key :test-while-idle?)                s/Bool
    (s/optional-key :time-between-eviction-runs-ms)   s/Int})
 
-(s/defschema ^:private AuthHostPort
-  {:host s/Str
-   :port s/Int})
-
-(s/defschema ^:private AuthURI
-  {:uri s/Str})
-
 (s/defschema ^:private AuthOptions
   {(s/optional-key :password)   s/Str
    (s/optional-key :timeout-ms) s/Int
    (s/optional-key :db)         s/Int})
+
+(s/defschema ^:private AuthHostPort
+  (merge {:host s/Str
+          :port s/Int}
+         AuthOptions))
+
+(s/defschema ^:private AuthURI
+  (merge {:uri s/Str} AuthOptions))
 
 (s/defschema ^:private ConnectionSpec
   (s/conditional
@@ -51,4 +52,4 @@
           :else        PoolConfig)
    :spec (s/conditional
           #(= % {}) (s/eq {})
-          :else     (s/maybe (merge ConnectionSpec AuthOptions)))})
+          :else     (s/maybe ConnectionSpec))})
